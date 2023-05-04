@@ -1,0 +1,51 @@
+---
+title: "MapDataPractice"
+output: html_document
+date: "2023-05-04"
+---
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+library(gganimate)
+library(maps)
+
+setwd("/Users/rishabhrajkankash/Desktop/Coding/Rstudio")
+
+CovidData <- read.csv("/Users/rishabhrajkankash/Desktop/Coding/Rstudio/tested_worldwide.csv")
+
+View(CovidData)
+
+cleanCovidData <- CovidData%>%
+  select(Date, Country_Region, Province_State, positive)%>%
+  arrange(Date)
+
+View(cleanCovidData)
+
+```
+
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+library(gganimate)
+library(maps)
+
+world_map <- map_data("world")
+country_coords <- world_map[,c("region", "long", "lat")]
+#View(country_coords)
+
+data_coords <- merge(country_coords, cleanCovidData, by.x = "region",by.y="Country_Region")
+
+# Plot the data points on a world map
+ggplot(data_coords, aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "gray90", color = "gray60") +
+  geom_point(aes(size = value), color = "red") +
+  scale_size_continuous(range = c(1, 10), breaks = c(10, 20, 30), labels = c("10", "20", "30")) +
+  theme_void()
+
+
+```
+
